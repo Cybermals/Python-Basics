@@ -1,0 +1,138 @@
+Lesson 5: Lists and For Loops
+=============================
+
+ In the previous lesson, we wrote a program that is capable of comparing user
+objects. However, it still only has one authorized user. We could add more users
+by creating more user objects and comparing each one with a new if block, but
+doing so would become tedious. Especially if we have hundreds of users. Instead,
+we can use a list and a for loop to compare the current user with a whole list of
+users.
+
+ First, we will need to copy-paste the User class from the last lesson. In order
+to make things a bit neater, we will go ahead and create an "App" class:
+
+class App(object):
+    """A basic app."""
+    def login(self, name, pswd):
+        """Log in using the given username and password."""
+        #Create current user
+        current_user = User(name, pswd)
+
+        #See if the current user matches any of the users in the list of
+        #authorized users.
+        for user in self.users:
+            if current_user == user:
+                return current_user
+
+        #No users matched
+        return None
+
+    def run(self):
+        """Run this app."""
+        #Create list of authorized users and get the current user
+        self.users = [
+            User("Dylan", "cheetah"),
+            User("Fiona", "fox"),
+            User("Daniel", "lion"),
+            User("Leila", "lioness"),
+            User("Abby", "cheetah")
+        ]
+        current_user = self.login(input("Name: "), input("Pswd: "))
+
+        #Attempt to log in
+        if current_user is not None:
+            current_user.say_hello()
+
+        else:
+            print("***Access Denied***")
+
+ Notice that this time we don't have an "__init__" method. If we don't create
+our own "__init__" method, the default one is used. The default "__init__"
+method only takes one parameter "self". Let's start by taking a look at the "run"
+method shall we?
+
+def run(self):
+    """Run this app."""
+    #Create list of authorized users and get the current user
+    self.users = [
+        User("Dylan", "cheetah"),
+        User("Fiona", "fox"),
+        User("Daniel", "lion"),
+        User("Leila", "lioness"),
+        User("Abby", "cheetah")
+    ]
+    current_user = self.login(input("Name: "), input("Pswd: "))
+
+    #Attempt to log in
+    if current_user is not None:
+        current_user.say_hello()
+
+    else:
+        print("***Access Denied***")
+
+ The "run" method starts by creating a list of users. In Python, a list can
+contain zero or more objects that are stored sequentially. Any of the objects
+in a list can be accessed by index like this:
+
+self.users[3]
+
+ An index in Python is a zero-based number that indicates the position of an
+item in a list. The first item has an index of 0 and the last item has an index
+that is one less than the length of the list. When we assign to the list, the
+items must be enclosed in square brackets "[]" and each item must be separated
+with a comma. The items can all be on a single line or each on its own line
+within the square brackets.
+
+ Next we call the "login" method of our app object. It takes 2 parameters
+(3 if you include "self"), and returns the user that matched the given name and
+password or None if no such user was found.
+
+ Then we check the current user to see if it is None. Notice how we used 
+"is not None" for the comparision. When comparing an object with None, it is
+recommended to use "is None" or "is not None" rather than "== None" or "!= None".
+
+ Just like before, if the user is valid we say hello and if not we say
+"***Access Denied***". Let me point out something here though. Do you see how
+"current_user" is not preceded by "self." like our list and login methods are?
+That is because "current_user" is only needed inside the "run" method. If we 
+don't precede it with "self." it will be deleted when the method returns.
+
+ Now, let's take a look at the "login" method:
+
+ def login(self, name, pswd):
+    """Log in using the given username and password."""
+    #Create current user
+    current_user = User(name, pswd)
+
+    #See if the current user matches any of the users in the list of
+    #authorized users.
+    for user in self.users:
+        if current_user == user:
+            return current_user
+
+    #No users matched
+    return None
+
+ The "login" method starts by creating an object representing the current user.
+But wait... didn't we create a variable with the same name inside our "run"
+method? We did, but in Python the variables inside each method are completely
+isolated from one another. Next, we will use a for loop to compare the current
+user with each user in our user list. The format for a for loop is this:
+
+for item in iterable:
+    #code
+
+ A for loop starts with the first item in a list or other iterable object. It
+assigns it to the "item" variable and executes the code inside the for block.
+Then it moves onto the next item and repeats the process until it reaches the
+end of the list or the loop is interrupted with the "break" or "return" keyword.
+
+ Inside our for loop, we compare the current user with the next user in our user
+list and if they match we return the current user. If the end of the list is
+reached without finding a match, the method returns None. None is a special
+object that has no attributes and is used to represent "nothingness".
+
+ The last line of the new program simply creating an app object and calls its
+"run" method:
+
+App().run()

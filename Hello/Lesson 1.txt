@@ -1,0 +1,20 @@
+Lesson 1: Console Output
+============================
+
+ In this tutorial I will show you how to create a simple Python program that
+displys "Hello World!" on the screen.
+
+ Python has a function called "print" that is used to display text in a console
+window. Let's take a look at the second line of the sample program:
+
+print("Hello World!")
+
+ Notice that the message we want to display must be enclosed in quotes. All
+text data must be defined this way in Python. Each piece of data that we pass
+to a function is called a parameter. In this case, we are passing one parameter
+to the "print" function (our message). Parameters must always be enclosed in
+parenthesis like in the example.
+
+ The second line of the the sample program is called a docstring. It is a
+description of the program. The docstring must always be enclosed in 3 quotes 
+and come before our code.

@@ -1,0 +1,44 @@
+Lesson 3: If Blocks
+===================
+
+ So far, every program we have written has simply executed each line from top to
+bottom. However, there are times when we need part of our code to only be 
+executed if certain conditions are true. Let's start by getting the user to
+enter a username and password:
+
+name = input("Name: ")
+pswd = input("Pswd: ")
+
+ Once we have a username and password, we can compare them to see if they are
+valid and then execute one block of code if they are valid or another block of
+code if they are not valid:
+
+if name == "Dylan" and pswd == "cheetah":
+    print("Hello {}!".format(name))
+
+else:
+    print("***Access Denied***")
+
+ The format of an if block is this:
+
+if condition:
+    #execute this code if the condition is true
+
+else:
+    #execute this code if the condition is false
+
+ So in the sample program, we compare the name with "Dylan" and the password with
+"cheetah". Then, if they both match, we say hello to the user. But if they do
+not match, we say "***Access Denied***" instead. Notice that we used 2 equal
+signs for each comparison:
+
+name == "Dylan" and pswd == "cheetah"
+
+ The double equal sign is the comparision operator. If the value on the left
+is equal to the value on the right, the condition is True. Otherwise, it is
+False. There are other comparision operators too: != (not equal), < (less than),
+> (greater than), <= (less than or equal to), >= (greater than or equal to). The
+keyword "and" tells Python that the condition should only be True if both
+comparisions are True. Also, notice that the blocks are indented. Python requires
+the contents of any type of block to be indented by an additional 4 spaces. Don't
+use tabs though, because it can cause bugs in your programs.

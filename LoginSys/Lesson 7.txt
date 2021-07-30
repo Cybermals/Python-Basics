@@ -1,0 +1,210 @@
+Lesson 7: Reusing Code
+======================
+
+ In the last 3 lessons, we have used the same "User" class over and over again
+and each time we had to copy-paste it into the new program. While this method
+does work, there is a better way to it that doesn't require copy-pasting the
+code over and over. Python supports something called modules. A module is
+simply a file containing source code that is separate from the other code. The
+best part about modules is that we can easily use them in multiple projects
+without having to copy-paste the code in them. In this lesson, we will learn 2
+things: how to use a module and how to create our own modules.
+
+ First, let's take a look at "loginsys.py":
+
+ """A simple login system."""
+
+import json
+
+
+#Classes
+#===============================================================================
+class User(object):
+    """A user."""
+    def __init__(self, name, pswd):
+        """Setup this user."""
+        self.name = name
+        self.pswd = pswd
+
+    def __eq__(self, user):
+        """Compare this user to the given user."""
+        return self.name == user.name and self.pswd == user.pswd
+
+    def say_hello(self):
+        """Say hello to this user."""
+        print("Hello {}!".format(self.name))
+
+
+class LoginSys(object):
+    """A simple login system."""
+    def __init__(self):
+        """Setup this login system."""
+        #Load the user data
+        print("Loading user data...", end = "")
+
+        with open("users.json", "r") as f:
+            user_data = json.load(f)
+
+        self.users = []
+
+        for user in user_data:
+            self.users.append(User(user["name"], user["pswd"]))
+
+        print("ok")
+
+    def login(self, name, pswd):
+        """Log in using the given username and password."""
+        #Create current user
+        current_user = User(name, pswd)
+
+        #See if the current user matches any of the users in the list of
+        #authorized users.
+        for user in self.users:
+            if current_user == user:
+                return current_user
+
+        #No users matched
+        return None
+
+ At first glance, you will notice that I have copy-pasted our "User" class into
+this file and created a new class called "LoginSys". Also, notice this line at
+the top:
+
+import json
+
+ That line is an import statement. It loads the "json" module and allows use to
+access it's contents as attributes on the "json" module object. That particular
+module provides an easy way to load data files that have been written in the
+JSON format. Let's take a look at our new user data file "users.json":
+
+[
+    {
+        "name": "Dylan",
+        "pswd": "cheetah"
+    },
+    {
+        "name": "Fiona",
+        "pswd": "fox"
+    },
+    {
+        "name": "Daniel",
+        "pswd": "lion"
+    },
+    {
+        "name": "Leila",
+        "pswd": "lioness"
+    },
+    {
+        "name": "Abby",
+        "pswd": "cheetah"
+    }
+]
+
+ This is the same data we had in our "users.cfg" file from the previous lesson,
+however it is in JSON format. Our new "LoginSys" class has an "__init__" method
+that loads our user data when we create a new instance:
+
+def __init__(self):
+    """Setup this login system."""
+    #Load the user data
+    print("Loading user data...", end = "")
+
+    with open("users.json", "r") as f:
+        user_data = json.load(f)
+
+    self.users = []
+
+    for user in user_data:
+        self.users.append(User(user["name"], user["pswd"]))
+
+    print("ok")
+
+ We simply open the .json file and call the "load" method of the "json" module.
+The "load" method then returns an object representing the contents of our .json
+file. However, we still need to create our user objects from the loaded data:
+
+self.users = []
+
+for user in user_data:
+    self.users.append(User(user["name"], user["pswd"]))
+
+ I'm sure you recognize the "append" method from before. But I'm sure you are
+wondering what these mean:
+
+user["name"]
+user["pswd"]
+
+ Our JSON data consists of a list of user dictionaries:
+
+{
+    "name": "Dylan",
+    "pswd": "cheetah"
+}
+
+ A dictionary is a list of objects that are refenced by name rather than index.
+So this code:
+
+user["name"]
+
+ Would retrieve the username and the other one would fetch the password. Then we
+use the 2 values as parameters for the "User" object constructor "__init__".
+
+ We no longer need the static method we added to our "User" class, so I have
+removed it. And I have moved the "login" method to our "LoginSys" class.
+
+ Now let's take a look at our new "main.py" code:
+
+#!/usr/bin/python3
+"""A simple login app."""
+
+from loginsys import LoginSys, User
+
+
+#Classes
+#===============================================================================
+class App(object):
+    """A basic app."""
+    def __init__(self):
+        """Setup this app."""
+        self.loginsys = LoginSys()
+
+    def run(self):
+        """Run this app."""
+        #Log in
+        current_user = self.loginsys.login(input("Name: "), input("Pswd: "))
+
+        if current_user is not None:
+            current_user.say_hello()
+
+        else:
+            print("***Access Denied***")
+
+
+#Entry Point
+#===============================================================================
+if __name__ == "__main__":
+    App().run()
+
+Take a look at this line:
+
+from loginsys import LoginSys, User
+
+ That line imports just 2 classes from the "loginsys" module. Please note that in
+order to work, our "main.py" and "loginsys.py" files must be in the same folder.
+Also, using the "from" keyword like this prevents us from having to give the
+module name when using these classes:
+
+loginsys.LoginSys
+loginsys.User
+
+ Instead we can drop the "loginsys." part.
+
+ In our app's "__init__" method we will create a new "LoginSys" object and then
+we will use it in our "run" method. The code in the "run" method is mostly the
+same as before.
+
+ These 2 lines tell Python to only run the app if the app code itself is not
+being imported as a module by another app:
+
+if __name__ == "__main__":
+    App().run()

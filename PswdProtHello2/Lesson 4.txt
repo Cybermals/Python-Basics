@@ -1,0 +1,133 @@
+Lesson 4: Objects
+=================
+
+ In the previous lesson, we wrote a program that compared a username and
+password to see if it was valid. However, we used separate "name" and "pswd"
+variables for the username and password even though they are related to the
+same thing. Both of them together represent a user. Having them separate works,
+but what if we were to add more pieces of data that are related to a user?
+Pretty soon, we would end up with several individual variables that we would
+have to keep track of. But there is a better way. Python supports objects. An
+object is basically a group of related variables and functions. For example, 
+let's draw a diagram of a user:
+
++----------+
+|User      |
++----------+
+|Variables:|
+|name      |
+|pswd      |
++----------+
+|Functions:|
+|say_hello |
++----------+
+
+ So what we have now, is a single object that has 2 variables ("name and "pswd"),
+and one function ("say_hello"). To represent this in Python, we must first
+create a class:
+
+class User(object):
+    """A user."""
+    def __init__(self, name, pswd):
+        """Setup this user."""
+        self.name = name
+        self.pswd = pswd
+
+    def __eq__(self, user):
+        """Compare this user to the given user."""
+        return self.name == user.name and self.pswd == user.pswd
+
+    def say_hello(self):
+        """Say hello to this user."""
+        print("Hello {}!".format(self.name))
+
+ A class is essentially a blueprint for an object. One class can be used over
+and over to create many similar objects more easily. The format for a class is:
+
+class Name(BaseClass):
+    #place attributes here
+
+ The base class is the class which we are basing our class on. In this case, we
+are basing our class on a generic object. A class inherits all attributes from
+its base class. An attribute is a variable or function that belongs to a class
+or object. A function that belongs to a class or object is called a method. Also, 
+notice that a class can have a docstring just like our main program can. Inside 
+our class we have 3 methods: "__init__", "__eq__", and "say_hello". I'm sure 
+you recognize the last one, but what are the other 2 for? "__init__" is called 
+to setup a new object and "__eq__" is called to compare 2 objects. The format for
+a method is:
+
+def name(parameters):
+    #code
+
+ The first parameter of a method must always be "self". "self" is a reference to
+the object the method belongs to. Notice that methods can also have docstrings.
+The parameters of the "__init__" method are pieces of data that are needed when
+setting up the object. In this case "self", "name", and "pswd" are the 
+parameters:
+
+def __init__(self, name, pswd):
+    """Setup this user."""
+    self.name = name
+    self.pswd = pswd
+
+ Inside this method, we assign the "name" parameter to the "name" attribute and
+assign the "pswd" parameter to the "pswd" attribute. Notice that attributes must
+be accessed by putting "self." followed by the attribute name.
+
+ The "__eq__" method is called an operator overload. An operator overload changes
+the behavior of a math operation when it is applied to an object. The "__eq__"
+method must always have 2 parameters "self" and a reference to the other object
+that is being compared. And it must return True if the 2 objects are equal or
+False if they are not equal. The "return" keyword is used to return a value from
+a method. In this case we comparing the username and password of the 2 user 
+objects and returning the result:
+
+def __eq__(self, user):
+    """Compare this user to the given user."""
+    return self.name == user.name and self.pswd == user.pswd
+
+ The "say_hello" method is a convenience method that simply says hello to the
+user. Notice that it only takes 1 parameter "self":
+
+def say_hello(self):
+    """Say hello to this user."""
+    print("Hello {}!".format(self.name))
+
+ After we have defined our class, we can use it in other parts of the program to
+create new user objects:
+
+dylan = User("Dylan", "cheetah")
+current_user = User(input("Name: "), input("Pswd: "))
+
+ Notice how we can simply, pass the name and password as parameters when creating
+a new user object. However, we do not pass a value for "self". Python 
+automatically passes a reference to the object as "self" as if we had done this:
+
+dylan = User(dylan, "Dylan", "cheetah")
+
+ After we have created 2 user objects, we can compare them:
+
+if current_user == dylan:
+    current_user.say_hello()
+
+else:
+    print("***Access Denied***")
+
+ Notice how much cleaner this looks. We can directly compare the 2 users with a
+single comparision instead of comparing the username and password separately.
+When we compare 2 users like this:
+
+current_user == dylan
+
+ Python executes code like this:
+
+current_user.__eq__(dylan)
+
+ Also notice how now we can simply call the "say_hello" method of the user to say
+hello to them now:
+
+current_user.say_hello()
+
+ Did you notice the lines that start with a "#"? They are called comments.
+Comments are basically notes within the program that are ignored by Python.

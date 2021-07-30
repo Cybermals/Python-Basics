@@ -1,0 +1,358 @@
+Lesson 8: While Loops
+=====================
+
+ Up until now, every program we have made did a simple task and then exited. In
+this lesson, we will write a program that uses a while loop to keep processing
+commands from the user. But first let's update our login system so that it can
+register new users and save the changes to our JSON file:
+
+def save(self):
+    """Save the modified user data."""
+    #Save user data
+    print("Saving user data...", end = "")
+    user_data = [{"name": user.name, "pswd": user.pswd} for user in self.users]
+
+    with open("users.json", "w") as f:
+        json.dump(user_data, f)
+
+    print("ok")
+
+ Our new "save" method builds a list of user data that can be converted to JSON
+and saved to our "users.json" file. Let's take a look at this expression though:
+
+[{"name": user.name, "pswd": user.pswd} for user in self.users]
+
+ This sort of expression is called a list comprehension. It builds a new list by
+applying an expression to each item in an existing iterable object. The format
+for a list comprehension is:
+
+[expression for item in iterable]
+
+ In this case, we are building one dictionary with a "name" and "pswd" item for
+each user.
+
+ Next we need to convert the resulting list to JSON data and store it into our
+"users.json" file:
+
+with open("users.json", "w") as f:
+    json.dump(user_data, f)
+
+ Notice that this time we are opening the file in write mode and using the "dump"
+method of the "json" module to save the JSON data to our file.
+
+ Since our new program is capable of adding new users and saving the updated
+user data, I have decided to modify our "__init__" method like this:
+
+def __init__(self):
+    """Setup this login system."""
+    #Load the user data
+    print("Loading user data...", end = "")
+    self.users = []
+
+    if not os.path.exists("users.json"):
+        print("ok")
+        return
+
+    with open("users.json", "r") as f:
+        user_data = json.load(f)
+
+    for user in user_data:
+        self.users.append(User(user["name"], user["pswd"]))
+
+    print("ok")
+
+ The only change I have made, is this part:
+
+self.users = []
+
+if not os.path.exists("users.json"):
+    print("ok")
+    return
+
+ The reason why I have done this is so that our program no longer needs the
+"users.json" file to be created manually. Instead, it checks to see if the file
+exists and if it does not, it simply leaves the user list empty. The 
+"os.path.exists" method returns True if the given file exists. Notice that we
+have to import the "os" module in order to use this method:
+
+import os
+
+ And now let's look at our new "register" method:
+
+def register(self, name, pswd):
+    """Register a new user."""
+    #Make sure the given username isn't used already
+    for user in self.users:
+        if user.name == name:
+            return False
+
+    #Add the new user
+    self.users.append(User(name, pswd))
+    self.save()
+    return True
+
+ We start by checking to see if the given username is already in use. It it is,
+we return False to indicate that the given user is already registered. Otherwise,
+we add the new user, save the updated user data, and return True to indicate
+success.
+
+ Now let's take a look at our new user management app. There is a new section for
+constants:
+
+#Constants
+#===============================================================================
+__version__ = "1.0.0"
+header_text = """LoginSys2 v{}
+Type 'help' for a list of commands.
+""".format(__version__)
+help_text = """help - display this message
+quit - exit this app
+login username, password - log into the system
+register username, password - register a new user account
+"""
+
+ A constant is a variable that will contain the same value the whole time our
+program is running. In this case we have 3 constants: "__version__", 
+"header_text", and "help_text". This first one contains the version number of our
+app, the second one contains some text that will be displayed after our app
+starts, and the third one contains descriptions of all the commands our app
+accepts. Notice that the last 2 constants are triple quoted strings though. A
+triple quoted string can contain multiple lines of text data without the need
+for an explicit newline char "\n".
+
+ The only other part that has changed is our "run" method:
+
+def run(self):
+    """Run this app."""
+    #Print the app header
+    print(header_text)
+
+    #Main Loop
+    current_user = None
+
+    while True:
+        #Get the next command
+        cmd = input("cmd> ")
+
+        if " " in cmd:
+            cmd, args = cmd.split(" ", 1)
+            args = [arg.strip() for arg in args.split(",")]
+
+        else:
+            args = []
+
+        #Process the command
+        if cmd == "help":
+            #Display the help text
+            print(help_text)
+
+        elif cmd == "quit":
+            #Exit this app
+            sys.exit(0)
+
+        elif cmd == "login":
+            #Check the command syntax
+            if len(args) < 2:
+                print("Syntax Error: 'login' command requires 2 args")
+
+            else:
+                #Login
+                current_user = self.loginsys.login(*args)
+
+                if current_user is not None:
+                    current_user.say_hello()
+
+                else:
+                    print("***Access Denied***")
+
+        elif cmd == "register":
+            #Check the command syntax
+            if len(args) < 2:
+                print("Syntax Error: 'register' command requires 2 args")
+
+            else:
+                #Register
+                if self.loginsys.register(*args):
+                    print("Registration succeeded.")
+
+                else:
+                    print("Registration failed.")
+
+        else:
+            #Unknown command
+            print("Unknown Command: '{}'".format(cmd))
+
+ I'm sure you have noticed how much larger our new "run" method is. The more we
+want our app to do, the more code we will have to write. But not to worry, we
+will take a look at one part at a time starting with the first bit of code:
+
+#Print the app header
+print(header_text)
+
+ This part simply prints our header text. Let's look at the next part:
+
+#Main Loop
+current_user = None
+
+while True:
+
+ This part of the code sets the "current_user" variable to None and starts a
+while loop. A while loop is much like a for loop, however it repeats the code
+inside it over and over until the given condition is False. Here is the format of
+a while loop:
+
+while condition:
+    #code
+
+ But wait... why did we use True for the condition? After all, True will always
+evaluate to True. In this case, we want a loop that continues until the program
+exits. We can exit any kind of loop by using the "break" or "return" keyword or
+by calling "sys.exit". We will take a closer look at "sys.exit" in a bit. The
+next part fetches the next command from the user:
+
+#Get the next command
+cmd = input("cmd> ")
+
+if " " in cmd:
+    cmd, args = cmd.split(" ", 1)
+    args = [arg.strip() for arg in args.split(",")]
+
+else:
+    args = []
+
+ First we use the "input" function to get the next command from the user, then
+we check to see if the command contains a space. If it does, we split the command
+at the first space only and unpack the 2 parts into the "cmd" and "args" 
+variables:
+
+cmd, args = cmd.split(" ", 1)
+
+ Wait... what? Ok. I shall explain this in more detail. The second parameter of
+the "split" method is "maxsep" and it determines the maximum number of times the
+string will be split. In this case, we will only allow up to one split, which
+will in turn yield a list of 2 items. When we have a list of items, we can
+"unpack" them into separate variables by using something called an unpack
+sequence:
+
+item1, item2 = list
+
+ This is equivalent to code like this:
+
+item1 = list[0]
+item2 = list[1]
+
+ The next line is a list comprehension that yields a list of stripped strings.
+And if the command did not contain a space, we simply set our "args" varialbe to
+an empty list.
+
+ I bet you are wondering why we need to do all this though? Let's take a look at
+the help text for our program:
+
+"""help - display this message
+quit - exit this app
+login username, password - log into the system
+register username, password - register a new user account
+"""
+
+ The format of our "login" command is "login username, password". Before we can
+use this data, we have to separate it into parts. First we separated the command
+and args similar to this:
+
+cmd = "login"
+args = "username, password"
+
+ And then we separated the args into individual strings that have been stripped
+as if we did this:
+
+args = ["username", "password"]
+
+ This process is known as "parsing". "parsing" means breaking down text data for
+further analysis.
+
+ To process the command, we will use a series of conditional statements starting
+with this one:
+
+#Process the command
+if cmd == "help":
+    #Display the help text
+    print(help_text)
+
+ The first one is easy. It simply prints our help text if the command was "help".
+However, the next one is a bit different:
+
+elif cmd == "quit":
+    #Exit this app
+    sys.exit(0)
+
+ Ok... what is this cryptic looking "elif"? "elif" means "if the previous
+condition was False and the next one is True, execute the code in the following
+block". So basically, if the command wasn't "help" and it is "quit" we will call
+"sys.exit". But what is "sys.exit"? That method ends the current program.
+Notice that we have to import the "sys" module in order to use it:
+
+import sys
+
+ The number we pass as a parameter to "exit" is called the exit code. 0 means
+success and anything else indicates some sort of error. The exact code for each
+type of error is up to us. But in this case, we will always use 0. Now let's
+look at the next block of code:
+
+elif cmd == "login":
+    #Check the command syntax
+    if len(args) < 2:
+        print("Syntax Error: 'login' command requires 2 args")
+
+    else:
+        #Login
+        current_user = self.loginsys.login(*args)
+
+        if current_user is not None:
+            current_user.say_hello()
+
+        else:
+            print("***Access Denied***")
+
+ This block gets executed if the command is "login". The first thing it does is
+make sure there are at least 2 arguments. The "len" function returns the length
+of the given object. It is equivalent to calling:
+
+object.__len__()
+
+ Any object can have a "length" by defining a "__len__" method. If there aren't
+enough arguments, we will display an error message. Otherwise, we will try to
+log in. But wait... didn't the "login" method take 2 parameters? But we used this
+expression:
+
+*args
+
+ Using an asterisk in front of a list as a parameter to a method passes each item
+in the list as a separate parameter. Wow! Isn't that convenient? The rest of the
+code is the same as before.
+
+ Now let's look at the next block:
+
+elif cmd == "register":
+    #Check the command syntax
+    if len(args) < 2:
+        print("Syntax Error: 'register' command requires 2 args")
+
+    else:
+        #Register
+        if self.loginsys.register(*args):
+            print("Registration succeeded.")
+
+        else:
+            print("Registration failed.")
+
+ This block gets executed if the command is "register". It's contents are mostly
+the same as the last one, but this time we call our new "register" method and
+check it's return value to see if registration succeeded.
+
+ And now for the last condition:
+
+else:
+    #Unknown command
+    print("Unknown Command: '{}'".format(cmd))
+
+ This block gets executed if none of the preceding conditions were True. It's
+purpose is to let the user know if the command they entered was invalid.

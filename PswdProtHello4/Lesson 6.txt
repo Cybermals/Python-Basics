@@ -1,0 +1,128 @@
+Lesson 6: Working with Files
+============================
+
+ In the previous lesson, we wrote a program that can check if a given user is in
+a list of authorized users. However, if we want to add more users, we would have
+to modify the code again. But there is a way to write a program that can read a
+list of users from a configuration file.
+
+ The first thing we need to do is modify our app class. We will no longer create
+the user list in the "run" method:
+
+def run(self):
+    """Run this app."""
+    #Get the current user
+    current_user = self.login(input("Name: "), input("Pswd: "))
+
+    #Attempt to log in
+    if current_user is not None:
+        current_user.say_hello()
+
+    else:
+        print("***Access Denied***")
+
+ Instead, we will add an "__init__" method to our app class and create the list
+there:
+
+def __init__(self):
+    """Setup this app."""
+    #Load the list of authorized users
+    print("Loading user list...", end = "")
+    self.users = []
+
+    with open("users.cfg", "r") as f:
+        for line in f:
+            if line.strip() == "[User]":
+                self.users.append(User.load_from_file(f))
+
+    print("ok")
+
+ The first thing we will do is display a loading message while the file is being
+loaded. Notice the 2nd parameter of the "print" funcion? It sets the end-of-line
+char used for printing the given text. The reason why we have a "end = " before
+it, is because "end" is an optional parameter.
+
+ Next we create our user list. But this time it is empty to start. We will be
+using the "append" method of our list to add one item at a time.
+
+ The best way to open a file, is to use a with block:
+
+with object as alias:
+    #code
+
+ A with block is something called a "context manager". When the program enters
+one, it calls the "__enter__" method of the given object and creates a new
+variable that refers to it. When the program leaves the with block, it calls
+the "__exit__" method of the given object. The "__exit__" method of a file
+object automatically closes the file without use having to explicitly call its
+"close" method. This is a good thing, since an error could occur and cause the
+file to remain open.
+
+ The "open" function requires 2 parameters. The first one is the name of the
+file to open and the second one is the file mode. The file mode indicates what
+we want to do with the file:
+
+"r" = read
+"w" = write; create if not present
+"r+" = read and write
+"w+" = read and write; create if not present
+"rb" = read in binary mode
+"wb" = write in binary mode; create if not present
+"rb+" = read and write in binary mode
+"wb+" = read and write in binary mode; create if not present
+
+ Next we will iterate over the lines of the file. A file object can be directly
+used in a for loop:
+
+for line in file:
+    #code
+
+ Keep in mind that each line of the file will end with a newline char "\n". The
+best way to it is to call the "strip" method of the string. "strip" removes all
+leading and trailing whitespace from a string of text. If you want to preserve
+the leading whitespace, use "rstrip" instead. Notice that we compare the
+resulting string with "[User]". That part prevents our program from loading
+corrupt data.
+
+ The next part is a little more complex:
+
+self.users.append(User.load_from_file(f))
+
+ This line calls the "load_from_file" method of the "User" class and adds the
+return value to the end of the user list. But wait a minute... how can we call
+a method on a class when we haven't created an object from it? Let's take a look
+at our new "load_from_file" method in the "User" class:
+
+@staticmethod
+def load_from_file(f):
+    """Load a user from a config file."""
+    name = f.readline().split("=")[1].strip()
+    pswd = f.readline().split("=")[1].strip()
+    return User(name, pswd)
+
+ Notice the "@staticmethod" above the method definition? It is called a
+decorator. Decorators modify the behavior of the following definition. In this
+case, we are making the following method static. A static method doesn't have
+"self" as its first parameter and it is called directly on the class it belongs
+to. The only parameter this method needs is the open config file.
+
+ Take a look at the formate of each config entry:
+
+[User]
+name = Dylan
+pswd = cheetah
+
+ The part inside the square brackets is called a section. Each section contains
+values. Each value is similar to a variable assignment in Python. Once we have
+found a section, the next line is the first value in the section. The "readline"
+method of a file object returns the next line of the file. However, we only need
+the part to the right of the equals sign. The easiest way to get it is to split
+the string. The "split" method separates a string into a list of smaller strings.
+We have to tell it what character separates the smaller strings and it does the
+rest for us. Afterward, we will "strip" any whitespace from the resulting string
+and store it into the appropriate variable. Then we create and return the new
+user.
+
+ After the entire config file has been read and processed, we will display "ok"
+to indicate that the file has been successfully loaded. The rest of the program
+doesn't need to be changed.

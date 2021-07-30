@@ -1,0 +1,32 @@
+Lesson 2: Console Input
+=============================
+
+ A program that simply displays the same messages every time we run it is 
+rarely useful. Let's modify the program so it can say hello to just the current
+user instead of the whole world.
+
+ The first thing we need to do is get the user's name. The "input" function can
+be used to get input from the user:
+
+name = input("Name: ")
+
+ The first parameter of the "input" function is the prompt string. A prompt
+string is some text that tells the user what kind of data to type into the
+computer. After the user presses enter, the text they typed will be stored into
+the variable on the left of the equal sign. A variable is a place in the memory
+where a piece of data can be stored.
+
+ After we have the user's name, we can say hi to them. Since we need to insert 
+the user's name into our message, we will use something called a format string 
+this time:
+
+print("Hello {}!".format(name))
+
+ Every pair of curly braces in our format string is essentially a "blank" where
+we want to insert the value of a variable into our message. The "format"
+method of a string is used to insert values into the "blanks" we have created.
+A method is a function that belongs to an object. In this case the object is
+our format string and the value we want to insert is the contents of our name
+variable. The number of parameters that the "format" method needs is equal to 
+the number of "blanks" in our format string. Also notice that we are using the 
+resulting string as the first parameter of the print function.
