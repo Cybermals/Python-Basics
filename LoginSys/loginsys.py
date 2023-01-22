@@ -3,10 +3,11 @@
 import json
 
 
-#Classes
-#===============================================================================
+# Classes
+# ===============================================================================
 class User(object):
     """A user."""
+
     def __init__(self, name, pswd):
         """Setup this user."""
         self.name = name
@@ -23,10 +24,11 @@ class User(object):
 
 class LoginSys(object):
     """A simple login system."""
+
     def __init__(self):
         """Setup this login system."""
-        #Load the user data
-        print("Loading user data...", end = "")
+        # Load the user data
+        print("Loading user data...", end="")
 
         with open("users.json", "r") as f:
             user_data = json.load(f)
@@ -40,14 +42,14 @@ class LoginSys(object):
 
     def login(self, name, pswd):
         """Log in using the given username and password."""
-        #Create current user
+        # Create current user
         current_user = User(name, pswd)
 
-        #See if the current user matches any of the users in the list of
-        #authorized users.
+        # See if the current user matches any of the users in the list of
+        # authorized users.
         for user in self.users:
             if current_user == user:
                 return current_user
 
-        #No users matched
+        # No users matched
         return None

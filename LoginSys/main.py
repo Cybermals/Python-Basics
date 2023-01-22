@@ -4,17 +4,18 @@
 from loginsys import LoginSys, User
 
 
-#Classes
-#===============================================================================
+# Classes
+# ===============================================================================
 class App(object):
     """A basic app."""
+
     def __init__(self):
         """Setup this app."""
         self.loginsys = LoginSys()
 
     def run(self):
         """Run this app."""
-        #Log in
+        # Log in
         current_user = self.loginsys.login(input("Name: "), input("Pswd: "))
 
         if current_user is not None:
@@ -24,7 +25,7 @@ class App(object):
             print("***Access Denied***")
 
 
-#Entry Point
-#===============================================================================
+# Entry Point
+# ===============================================================================
 if __name__ == "__main__":
     App().run()

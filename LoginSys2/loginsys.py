@@ -4,10 +4,11 @@ import json
 import os
 
 
-#Classes
-#===============================================================================
+# Classes
+# ===============================================================================
 class User(object):
     """A user."""
+
     def __init__(self, name, pswd):
         """Setup this user."""
         self.name = name
@@ -24,10 +25,11 @@ class User(object):
 
 class LoginSys(object):
     """A simple login system."""
+
     def __init__(self):
         """Setup this login system."""
-        #Load the user data
-        print("Loading user data...", end = "")
+        # Load the user data
+        print("Loading user data...", end="")
         self.users = []
 
         if not os.path.exists("users.json"):
@@ -44,9 +46,10 @@ class LoginSys(object):
 
     def save(self):
         """Save the modified user data."""
-        #Save user data
-        print("Saving user data...", end = "")
-        user_data = [{"name": user.name, "pswd": user.pswd} for user in self.users]
+        # Save user data
+        print("Saving user data...", end="")
+        user_data = [{"name": user.name, "pswd": user.pswd}
+                     for user in self.users]
 
         with open("users.json", "w") as f:
             json.dump(user_data, f)
@@ -55,26 +58,26 @@ class LoginSys(object):
 
     def login(self, name, pswd):
         """Log in using the given username and password."""
-        #Create current user
+        # Create current user
         current_user = User(name, pswd)
 
-        #See if the current user matches any of the users in the list of
-        #authorized users.
+        # See if the current user matches any of the users in the list of
+        # authorized users.
         for user in self.users:
             if current_user == user:
                 return current_user
 
-        #No users matched
+        # No users matched
         return None
 
     def register(self, name, pswd):
         """Register a new user."""
-        #Make sure the given username isn't used already
+        # Make sure the given username isn't used already
         for user in self.users:
             if user.name == name:
                 return False
 
-        #Add the new user
+        # Add the new user
         self.users.append(User(name, pswd))
         self.save()
         return True

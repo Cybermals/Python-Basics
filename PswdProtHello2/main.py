@@ -2,10 +2,11 @@
 """An improved version of PswdProtHello that uses objects."""
 
 
-#Classes
-#===============================================================================
+# Classes
+# ===============================================================================
 class User(object):
     """A user."""
+
     def __init__(self, name, pswd):
         """Setup this user."""
         self.name = name
@@ -20,8 +21,8 @@ class User(object):
         print("Hello {}!".format(self.name))
 
 
-#Entry Point
-#===============================================================================
+# Entry Point
+# ===============================================================================
 dylan = User("Dylan", "cheetah")
 current_user = User(input("Name: "), input("Pswd: "))
 

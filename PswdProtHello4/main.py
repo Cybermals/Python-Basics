@@ -3,8 +3,8 @@
 """
 
 
-#Classes
-#===============================================================================
+# Classes
+# ===============================================================================
 class User(object):
     """A user."""
     @staticmethod
@@ -30,10 +30,11 @@ class User(object):
 
 class App(object):
     """A basic app."""
+
     def __init__(self):
         """Setup this app."""
-        #Load the list of authorized users
-        print("Loading user list...", end = "")
+        # Load the list of authorized users
+        print("Loading user list...", end="")
         self.users = []
 
         with open("users.cfg", "r") as f:
@@ -45,24 +46,24 @@ class App(object):
 
     def login(self, name, pswd):
         """Log in using the given username and password."""
-        #Create current user
+        # Create current user
         current_user = User(name, pswd)
 
-        #See if the current user matches any of the users in the list of
-        #authorized users.
+        # See if the current user matches any of the users in the list of
+        # authorized users.
         for user in self.users:
             if current_user == user:
                 return current_user
 
-        #No users matched
+        # No users matched
         return None
 
     def run(self):
         """Run this app."""
-        #Get the current user
+        # Get the current user
         current_user = self.login(input("Name: "), input("Pswd: "))
 
-        #Attempt to log in
+        # Attempt to log in
         if current_user is not None:
             current_user.say_hello()
 
@@ -70,6 +71,6 @@ class App(object):
             print("***Access Denied***")
 
 
-#Entry Point
-#===============================================================================
+# Entry Point
+# ===============================================================================
 App().run()

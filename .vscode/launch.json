@@ -1,0 +1,75 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: PswdProtHello4",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/PswdProtHello4/main.py",
+            "cwd": "${workspaceFolder}/PswdProtHello4",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: PswdProtHello3",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/PswdProtHello3/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: PswdProtHello2",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/PswdProtHello2/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: PswdProtHello",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/PswdProtHello/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: LoginSys2",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/LoginSys2/main.py",
+            "cwd": "${workspaceFolder}/LoginSys2",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: LoginSys",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/LoginSys/main.py",
+            "cwd": "${workspaceFolder}/LoginSys",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Hello_",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Hello_/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Hello",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Hello/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}"
+        }
+    ]
+}
